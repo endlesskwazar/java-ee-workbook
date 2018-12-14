@@ -1,0 +1,18 @@
+{
+  "name": "java-ee-workbook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^4.0.0",
+    "gulp-insert": "^0.5.0",
+    "gulp-markdown-github-style": "^1.1.1",
+    "gulp-rename": "^1.4.0"
+  }
+}
