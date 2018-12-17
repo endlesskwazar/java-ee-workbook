@@ -54,7 +54,7 @@ gulp.task('presentations', () => {
              <script src="https://remarkjs.com/downloads/remark-latest.min.js">
              </script>
              <script>
-                 var slideshow = remark.create();
+                 var slideshow = remark.create({ratio: '16:9'});
              </script>
          </body>
          
