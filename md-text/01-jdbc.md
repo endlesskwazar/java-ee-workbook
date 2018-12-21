@@ -24,7 +24,7 @@ JDBC включає в себе API для:
 
 Нижче наведено архітектурну діаграму, яка показує розташування менеджера драйверів щодо драйверів JDBC та програми Java
 
-![](resources/img/jdbc-img-1.jpg)
+![](../resources/img/jdbc-img-1.jpg)
 
 У всіх прикладах підключення до бази даних в Інтернеті ви обов'язково зустрінете ці рядки:
 
@@ -54,7 +54,7 @@ DriverManager - це Сінглтон, який містить інформац�
 
 Якщо подивитися джерельний код реалізації будь-якого драйвера він буде містити статичний блок ініціалізації такого виду:
 
-```
+```java
 static {
     try {
         java.sql.DriverManager.registerDriver(new Driver());
@@ -118,7 +118,7 @@ JDBC API знаходиться в Java SE, а це означає, що для 
 
 ### Підключення до Mysql
 
-```
+```java
 Class.forName("com.mysql.jdbc.Driver");
 Connection conn = DriverManager.getConnection("jdbc:mysql://hostname:port/dbname","username", "password");
 conn.close();
@@ -126,7 +126,7 @@ conn.close();
 
 ### Підключення до PostgreSQL
 
-```
+```java
 Class.forName("org.postgresql.Driver");
 Connection connection = DriverManager.getConnection("jdbc:postgresql://hostname:port/dbname","username", "password");
 connection.close();
@@ -134,7 +134,7 @@ connection.close();
 
 ### Підключення до Oracle
 
-```
+```java
 Class.forName("oracle.jdbc.driver.OracleDriver");
 Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:mkyong","username","password");
 connection.close();
@@ -183,7 +183,7 @@ connection.close();
 
 Відкрийте pom.xml і додайте наступну залежність:
 
-```
+```xml
 <dependency>
     <groupId>org.xerial</groupId>
     <artifactId>sqlite-jdbc</artifactId>
@@ -193,7 +193,7 @@ connection.close();
 
 Після цього pom.xml виглядає так:
 
-```
+```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -220,7 +220,7 @@ connection.close();
 
 Вміст Product.java наступний:
 
-```
+```java
 package jdbc.lb.domain;
 
 public class Product {
@@ -283,7 +283,7 @@ public class Product {
 
 Файл ProductDAO.java має наступний вміст:
 
-```
+```java
 package jdbc.lb.dao;
 
 import java.util.List;
@@ -305,7 +305,7 @@ public interface ProductDAO {
 
 Покищо ProductDAOImpl містить лише заглушки для реалізації інтерфейсу ProductDAO:
 
-```
+```java
 package jdbc.lb.dao;
 
 import java.util.List;
@@ -341,7 +341,7 @@ public class ProductDAOImpl implements ProductDAO {
 
 ## Реалізація getAll
 
-```
+```java
 public List<Product> getAll() {
 		Connection connection = null;
 		List<Product> products = null;
@@ -375,7 +375,7 @@ public List<Product> getAll() {
 
 ## Реалізація getById
 
-```
+```java
 public Product getById(int id) {
 		Connection connection = null;
 
@@ -408,7 +408,7 @@ public Product getById(int id) {
 
 ## Реалізація add
 
-```
+```java
 	public Product add(Product product) {
 		Connection connection = null;
 
@@ -435,7 +435,7 @@ public Product getById(int id) {
 
 ## Реалізація remove
 
-```
+```java
 public void remove(Product product) {
 		Connection connection = null;
 
@@ -460,7 +460,7 @@ public void remove(Product product) {
 
 ## Реалізація update
 
-```
+```java
 public void update(Product product) {
 		Connection connection = null;
 
@@ -489,7 +489,7 @@ public void update(Product product) {
 
 Ми додамо в клас ProductDAOImpl конструктор, який буде створювати таблицю в базі даних, якщо вона ще не була створена. Код конструктора приведено нижче:
 
-```
+```java
 public ProductDAOImpl() {
 		Connection connection = null;
 
@@ -513,7 +513,7 @@ public ProductDAOImpl() {
 
 ## Остаточний код ProductDAOImpl.java
 
-```
+```java
 package jdbc.lb.dao;
 
 import java.sql.Connection;
@@ -686,7 +686,7 @@ public class ProductDAOImpl implements ProductDAO {
 
 Код класа Main:
 
-```
+```java
 package jdbc.lb;
 
 import jdbc.lb.dao.ProductDAO;

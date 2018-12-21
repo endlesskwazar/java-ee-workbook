@@ -15,7 +15,7 @@
 
 Архітектура API сервлета грунтується на тому, що класичний провайдер сервісу використовує метод service (), через який всі клієнтські запити будуть надсилатися програмним забезпеченням контейнера сервлетів, і методи життєвого циклу init () і destroy (), які викликаються тільки в той час, коли сервлет завантажується і вивантажується (це трапляється рідко).
 
-```
+```java
 public interface Servlet {
    public void init(ServletConfig config) throws ServletException;
    
@@ -147,7 +147,7 @@ webapp archetype містить шаблон JSP(про JSP, ми поговор
 
 Відкрийте pom.xml і додайте наступну залежність:
 
-```
+```xml
 <dependency>
     <groupId>javax.servlet</groupId>
     <artifactId>javax.servlet-api</artifactId>
@@ -158,7 +158,7 @@ webapp archetype містить шаблон JSP(про JSP, ми поговор
 
 Після цього pom.xaml виглядає так:
 
-```
+```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -198,7 +198,8 @@ webapp archetype містить шаблон JSP(про JSP, ми поговор
 Ми виберемо 2-й варіант.
 
 Додйте конфігурацю Maven Jetty Plugin всередину тега build -> plugins:
-```
+
+```xml
 		<!-- http://mvnrepository.com/artifact/org.eclipse.jetty/jetty-maven-plugin -->
 		<plugins>
 			<plugin>
@@ -219,7 +220,7 @@ webapp archetype містить шаблон JSP(про JSP, ми поговор
 
 Фінальний pom.xml:
 
-```
+```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -303,7 +304,7 @@ webapp archetype містить шаблон JSP(про JSP, ми поговор
 
 Перепишіть метод doGet класа HelloWorldHttpServlet наступним чином:
 
-```
+```java
 protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		StringBuilder resultHTML = new StringBuilder();
 		resultHTML.append("<form method=\"POST\">");
@@ -317,7 +318,7 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 
 Перепишіть метод doPost наступним чином:
 
-```
+```java
 protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
 		String name = request.getParameter("name");
 		response.setContentType("text/html;charset=UTF-8");
@@ -334,6 +335,16 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 # Домашнє завдання
 
 ## Варіанти
+
+1. Розробіть сервлет, який реалізує пошук по двовимірному масиву даних.
+2. Створіть хеш-таблицю (HashMap) та розробіть сервлет, який по запиту виводить  значення хеш-таблиці.
+3. Створіть хеш-таблицю (HashMap) та розробіть сервлет, який додає нові значення до хеш-таблиці.
+4. Створіть хеш-таблицю (HashMap) та розробіть сервлет, який по запиту  вилучає записи з хеш-таблиці.
+5. Створіть таблицю (TreeMap) та розробіть сервлет, який по запиту виводить  значення таблиці.
+6. Створіть таблицю (TreeMap) та розробіть сервлет, який додає нові значення до таблиці.
+7. Створіть таблицю (TreeMap) та розробіть сервлет, який по запиту  вилучає записи з таблиці.
+8. Створіть динамічний масив(ArrayList) та розробіть сервлет, який по запиту виводить  значення масиву.
+9. Створіть динамічний масив(ArrayList) та розробіть сервлет, який по запиту додає нові значення до масиву.
 
 # Контрольні питання
 
