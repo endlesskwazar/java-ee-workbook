@@ -4,16 +4,23 @@ var rename = require("gulp-rename");
 var insert = require('gulp-insert');
 
 
+
 gulp.task('resources', () => {
     return gulp.src('resources/**/*')
         .pipe(gulp.dest('dist/resources'));
 });
 
-gulp.task('md', () => {
+gulp.task('workbook', () => {
     return gulp.src('md-text/*.md')
         .pipe(markdown())
         .pipe(gulp.dest('dist/workbook'));
 });
+
+gulp.task('additional', () => {
+    return gulp.src('md-additional/*.md')
+    .pipe(markdown())
+    .pipe(gulp.dest('dist/additional'));
+})
 
 gulp.task('presentations', () => {
     return gulp.src('md-presentations/*.md')
@@ -67,4 +74,4 @@ gulp.task('presentations', () => {
         .pipe(gulp.dest('dist/presentations'));
 });
 
-gulp.task('default', gulp.parallel('resources', 'md', 'presentations'));
+gulp.task('default', gulp.parallel('resources', 'workbook', 'additional', 'presentations'));
