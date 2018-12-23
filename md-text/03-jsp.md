@@ -22,9 +22,63 @@
 
 ## JSP Expression
 
+Код, поміщений у тег вираження JSP, записується у вихідний потік відповіді. Так що вам не потрібно писати out.print () для запису даних. В основному це використовується для друку значень змінної або методу.
+
+Синтаксис Jsp виразів
+
+```jsp
+<%=  statement %>
+```
+
+Наприклад,
+
+```jsp
+<%= "This is string" %>
+
+<!-- a is variable -->
+<%= a %>
+```
+
 ## JSP Scriplet
 
+Скриплет JSP дають можливість вставити будь-який код в метод сервлета, який буде створений при обробці сторінки, дозволяючи використовувати більшість конструкцій Java. Скріплет також мають доступ до тих же заздалегідь певним змінним, що і вирази. Тому, наприклад, для виведення значення на сторінку необхідно використовувати заздалегідь певну змінну out.
+
+Синтаксис JSP Скриплетів:
+
+```jsp
+
+<% 
+    for(int i = 0; i < 10; i++)
+	    out.print(i);
+%>
+
+```
+
 ## JSP Declaration
+
+Тег декларації JSP використовується для оголошення полів та методів. Код, написаний всередині тегу дессенції jsp, розміщується поза службою () методом автоматично створеного сервлета. Таким чином, він не виділяє пам'яті за кожним запитом.
+
+Синтаксис JSP Declaration:
+```jsp
+<%! %>
+```
+
+Приклад:
+
+```jsp
+<%!
+int testVar = 3;
+%>
+
+<%!
+int getTestVar(){
+	return testVar;
+}
+%>
+
+<%= "Test var = " + testVar %>
+<%= "Result of getTestVar() = " + getTestVar() %>
+```
 
 ## JSP Directive
 
@@ -32,7 +86,52 @@
 
 # JSP копілюється в Servlet
 
+JSP транслюється в Java-сервлет і обробляє HTTP-запити і генерує відповіді як будь-який сервлет. Однак технологія JSP забезпечує більш зручний спосіб кодування сервлету.
+
+Сторінка JSP обслуговує запити, як сервлет. Отже, життєвий цикл і багато можливостей сторінок JSP (зокрема, динамічні аспекти) визначаються технологією Java Servlet.
+
+JSP-файл компілюються або при першому зверненні до нього, або при старті сервера. Це залежить від налаштувань сервера. Крім того, скомпільовані class-файли можуть зберігатися не в каталозі проекту, а в кеші сервера, тому ви можете їх не виявити навіть після звернення до jsp-сторінці.
+
 # Створення і виконання JSP в середовищі Eclipse з використанням Maven
+
+В середовищі Eclipse створіть новий Maven Project. Виберіть archetype - maven-archytype-webapp
+
+![](../resources/img/jsp/01-img.png)
+
+Заповніть необхідну інформацію для створення Maven проекту:
+
+![](../resources/img/jsp/02-img.png)
+
+Відкрийте pom.xml і додайте наступну залежність:
+
+```
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>javax.servlet-api</artifactId>
+    <version>4.0.1</version>
+    <scope>provided</scope>
+</dependency>
+```
+
+Додйте конфігурацю Maven Jetty Plugin всередину тега build -> plugins:
+
+<!-- http://mvnrepository.com/artifact/org.eclipse.jetty/jetty-maven-plugin -->
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>9.2.10.v20150310</version>
+
+				<configuration>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<webApp>
+						<contextPath>/servletlb</contextPath>
+					</webApp>
+				</configuration>
+
+			</plugin>
+		</plugins>
+
 
 # Домашнє завдання
 
