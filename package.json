@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "gulp-md-to-html": "^1.0.0",
     "npx": "^10.2.0"
   },
   "devDependencies": {
