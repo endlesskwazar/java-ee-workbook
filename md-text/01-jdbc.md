@@ -18,7 +18,7 @@ JDBC включає в себе API для:
 - З'єднання із базою даних
 - Створення SQL запитів
 - Виконання SQL запитів
-- API транзакцій і збережених процедур
+- Робота із транзакціями і збережинимо процедурами
 
 # JDBC. Концепція драйверів.
 
@@ -26,7 +26,7 @@ JDBC включає в себе API для:
 
 Нижче наведено архітектурну діаграму, яка показує розташування менеджера драйверів щодо драйверів JDBC та програми Java
 
-![](../resources/img/jdbc-img-1.jpg)
+![](../resources/img/jdbc/jdbc-img-1.jpg)
 
 У всіх прикладах підключення до бази даних в Інтернеті ви обов'язково зустрінете ці рядки:
 
@@ -50,7 +50,7 @@ Connection connection = DriverManager
 
 JDBC драйвер конкретної бази даних як раз і надає реалізації цих інтерфейсів.
 
-DriverManager - це Сінглтон, який містить інформацію про всіх зареєстрованих драйвери. Метод getConnection на підставі параметра URL знаходить java.sql.Driver відповідної бази даних і викликає у нього метод connect.
+DriverManager - це Singlton, який містить інформацію про всі зареєстровані драйвери. Метод getConnection на підставі параметра URL знаходить java.sql.Driver відповідної бази даних і викликає у нього метод connect.
 
 Так а навіщо ж виклик Class.forName ()?
 
@@ -80,7 +80,7 @@ static {
 
 ## DriverManager
 
-Клас DriverManager є рівнем управління в JDBC і знаходиться між користувачем і драйверами. Він відстежує всі доступні драйвери і управляє встановленням з'єднань між БД і відповідним драйвером. До того ж, клас DriverManager піклується про такі речі, як максимальний час логіна до БД і висновок налагоджувальної інформації в журнал.
+Клас DriverManager є рівнем управління в JDBC і знаходиться між користувачем і драйверами. Він відстежує всі доступні драйвери і управляє встановленням з'єднань між БД і відповідним драйвером. До того ж, клас DriverManager піклується про такі речі, як максимальний час підключення до БД і інше.
 
 Для простих додатків єдиний корисний метод в цьому класі - це DriverManager.getConnection. Як можна здогадатися по його імені, він встановлює з'єднання з БД. JDBC дозволяє користувачеві викликати також наступні методи DriverManager: getDriver, getDrivers і registerDriver, і метод connect інтерфейсу Driver, але в більшості випадків краще перекласти відповідальність встановлення з'єднання на клас DriverManager.
 
@@ -107,7 +107,7 @@ SQLException є checked винятком і його всюди треба тя�
 # Використання JDBC
 ## Налаштування середовища
 
-JDBC API знаходиться в Java SE, а це означає, що для роботи з ним нам не потрібно завнтажувати якісь бібліотеки, що не можна сказати про чамих постачальників драйверів.
+JDBC API знаходиться в Java SE, а це означає, що для роботи з ним нам не потрібно завантажувати якісь бібліотеки, що не можна сказати про самих постачальників драйверів.
 
 В залежності від того з якою базою даних ми працюємо потрібно завантажити відповідний jar - файл, або додати залежність, якщо використовується система сборки, на постачальника драйверів.
 
@@ -142,9 +142,35 @@ Connection connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost
 connection.close();
 ```
 
-### 
-
 ## Виконання запитів
+
+Для виконання запитів за допомогою JDBC можна використати Statement або PreparedStatement.
+
+У PreparedStatement ви задаєте запит, в якому можете змінювати будь-які параметри. Наприклад, ваш запит повинен виконатися кілька разів з різними параметрами. Тоді це зручніше і швидше. У PreparedStatement всі строкові параметри автоматично перетворюються в рядки з escape-послідовностями. Зокрема, немає ніяких проблем з рядками, які містять лапки. А при використанні складання рядків і Statement вам про це треба дбати самим або ви отримаєте SQL injection.
+
+Створення Statement:
+```java
+Statement statement = connection.createStatement();
+statement.executeQuery("select* from users");
+```
+
+Існує кілька способів виконувати SQL-запити в залежності від типу цього запиту. Для цього у інтерфейсу Statement існує три різних методи: **executeQuery ()**, **executeUpdate ()**, а також **execute ()**. Розглянемо їх окремо.
+
+Самий базовий метод **executeQuery ()** необхідний для запитів, результатом яких є один єдиний набір значень, таких як у запитів SELECT. Повертає ResultSet, який не може бути null навіть якщо у результату запиту не було знайдено значень.
+
+Метод **execute ()** використовується, коли оператори SQL повертають більше одного набору даних, більше одного лічильника оновлень і інше. Метод повертає true, якщо результатом є ResultSet, як у запиту SELECT. Поверне false, якщо ResultSet відсутня, наприклад при запитах виду Insert, Update. 
+
+Метод **executeUpdate ()** використовується для виконання операторів INSERT, UPDATE або DELETE, а також для операторів DDL (Data Definition Language - мова визначення даних), наприклад, CREATE TABLE і DROP TABLE. Результатом оператора INSERT, UPDATE, або DELETE є модифікація однієї або більше колонок в нулі або більше рядках таблиці. Метод executeUpdate () повертає ціле число, що показує, скільки рядків було модифіковано. Для виразів типу CREATE TABLE і DROP TABLE, які не оперують над рядками, що повертається методом executeUpdate () значення завжди дорівнює нулю.
+
+Всі методи виконання SQL-запитів закривають попередній набір результатів (result set) у даного об'єкта Statement. Це означає, що перед тим як виконувати наступний запит над тим же об'єктом Statement, треба завершити обробку результатів попереднього (ResultSet).
+
+Створення PreparedStatement:
+
+```java
+String sql = "select * from users where name = ?";
+PreparedStatement preparedStatement = connection.preparedStatement(sql);
+preparedStatement.setString(1, "value");
+```
 
 # Патерн DAO, використовуючи JDBC
 
@@ -152,44 +178,38 @@ connection.close();
 
 Відкрийте Eclipse IDE і створіть новий Maven - проект:
 
-![](../resources/img/jdbc-img-2.png)
+![](../resources/img/jdbc/jdbc-img-2.png)
 
 Встановіть галочку напроти Create a simple project(skip archetype selection)
 
-![](../resources/img/jdbc-img-3.png)
+![](../resources/img/jdbc/jdbc-img-3.png)
 
 Встановіть Group Id і Artifact Id
 - Group Id відноситься до організації в, якій ми працюємо
 - Artifact Id - назва  проекту всередині організації
 
-![](../resources/img/jdbc-img-4.png)
+![](../resources/img/jdbc/jdbc-img-4.png)
 
 В результаті ми отримаємо наступну структуру проекта в Eclipse
 
-![](../resources/img/jdbc-img-5.png)
+![](../resources/img/jdbc/jdbc-img-5.png)
 
 - src/main/java - містить Java - класи
 - pom.xml - файл maven, який містить деталі зборки проекту
 
 Інші елементи в структурі проекту нас покищо не цікавлять.
 
-Натисніть правою кнопкою мишки на проекті і виберіть New -> File
+## Додавання залежності H2
 
-![](../resources/img/jdbc-img-6.png)
-
-Потрібно створити новий файл db.db, який буде представляти собою sqlite - файл бази даних.
-
-![](../resources/img/jdbc-img-7.png)
-
-## Додавання залежності постачальника драйверів для роботи з sqlite
+H2 - відкрита кроссплатформенная СУБД, повністю написана на мові Java.
 
 Відкрийте pom.xml і додайте наступну залежність:
 
 ```xml
 <dependency>
-    <groupId>org.xerial</groupId>
-    <artifactId>sqlite-jdbc</artifactId>
-    <version>3.25.2</version>
+	<groupId>com.h2database</groupId>
+	<artifactId>h2</artifactId>
+	<version>1.4.197</version>
 </dependency>
 ```
 
@@ -200,15 +220,15 @@ connection.close();
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.ius</groupId>
-	<artifactId>jdbc.lb</artifactId>
+	<groupId>ua.com.endlesskwazar.h2</groupId>
+	<artifactId>jdbc</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.xerial</groupId>
-			<artifactId>sqlite-jdbc</artifactId>
-			<version>3.25.2</version>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.197</version>
 		</dependency>
 	</dependencies>
 </project>
@@ -218,7 +238,7 @@ connection.close();
 
 Створіть новий клас Product.
 
-![](../resources/img/jdbc-img-8.png)
+![](../resources/img/jdbc/jdbc-img-8.png)
 
 Вміст Product.java наступний:
 
@@ -279,33 +299,31 @@ public class Product {
 
 ## Створення слоя доступу до даних - DAO
 
-Створіть новий інтерфейс - ProductDAO:
+Створіть новий інтерфейс - Dao:
 
-![](../resources/img/jdbc-img-9.png)
+![](../resources/img/jdbc/jdbc-img-9.png)
 
-Файл ProductDAO.java має наступний вміст:
+Файл Dao.java має наступний вміст:
 
 ```java
 package jdbc.lb.dao;
 
 import java.util.List;
 
-import jdbc.lb.domain.Product;
-
-public interface ProductDAO {
-	List<Product> getAll();
-	Product getById(int id);
-	Product add(Product product);
-	void remove(Product product);
-	void update(Product product);
+public interface Dao<T, Id> {
+	List<T> getAll();
+	T getById(Id id);
+	T add(T entity);
+	void remove(Id id);
+	void update(T entity);
 }
 ```
 
-Створіть новий клас ProductDAOImpl, який реалізує ProductDAO:
+Створіть новий клас ProductDao, який реалізує Dao:
 
-![](../resources/img/jdbc-img-10.png)
+![](../resources/img/jdbc/jdbc-img-10.png)
 
-Покищо ProductDAOImpl містить лише заглушки для реалізації інтерфейсу ProductDAO:
+Покищо ProductDAO містить лише заглушки для реалізації інтерфейсу Dao:
 
 ```java
 package jdbc.lb.dao;
@@ -314,206 +332,198 @@ import java.util.List;
 
 import jdbc.lb.domain.Product;
 
-public class ProductDAOImpl implements ProductDAO {
+public class ProductDao implements Dao<Product, Integer> {
 
 	public List<Product> getAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Product getById(int id) {
+	public Product getById(Integer id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Product add(Product product) {
+	public Product add(Product entity) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void remove(Product product) {
+	public void remove(Integer id) {
 		// TODO Auto-generated method stub
+		
 	}
 
-	public void update(Product product) {
+	public void update(Product entity) {
 		// TODO Auto-generated method stub
+		
 	}
+
 }
+```
+
+## Строка підключення
+
+Додамо статичне, фінальне поле, яке міститиме деталі з'єданання із базою даних:
+
+```java
+public class ProductDao implements Dao<Product, Integer> {
+
+	private final static String url = "jdbc:h2:mem:products";
+
+	....
 ```
 
 ## Реалізація getAll
 
 ```java
 public List<Product> getAll() {
-		Connection connection = null;
-		List<Product> products = null;
-
-		try {
-			connection = DriverManager.getConnection("jdbc:sqlite:db.db");
-			String sql = "SELECT * FROM PRODUCTS;";
-			Statement statement = connection.createStatement();
-			ResultSet productsResult = statement.executeQuery(sql);
-			products = new ArrayList<Product>();
-			while (productsResult.next()) {
-				Product product = new Product();
-				product.setId(productsResult.getInt(1));
-				product.setTitle(productsResult.getString(2));
-				product.setPrice(productsResult.getFloat(3));
-				products.add(product);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (connection != null)
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+	Connection conn = null;
+	List<Product> list = null;
+	
+	try {
+		conn = DriverManager.getConnection(url);
+		String sql = "select* from products;";
+		Statement statement = conn.createStatement();
+		ResultSet rs = statement.executeQuery(sql);
+		
+		list = new ArrayList<Product>();
+		while(rs.next()) {
+			Product product = new Product();
+			product.setId(rs.getInt(1));
+			product.setTitle(rs.getString(2));
+			product.setPrice(rs.getFloat(3));
+			list.add(product);
 		}
-		return products;
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
+	return list;
+}
 ```
 
 ## Реалізація getById
 
 ```java
-public Product getById(int id) {
-		Connection connection = null;
-
-		try {
-			connection = DriverManager.getConnection("jdbc:sqlite:db.db");
-			String sql = "SELECT * FROM PRODUCTS where id = ?;";
-			PreparedStatement preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setInt(1, id);
-			ResultSet productsResult = preparedStatement.executeQuery();
-			while (productsResult.next()) {
-				Product product = new Product();
-				product.setId(productsResult.getInt(1));
-				product.setTitle(productsResult.getString(2));
-				product.setPrice(productsResult.getFloat(3));
-				return product;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (connection != null)
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+public Product getById(Integer id) {
+	Connection conn = null;
+	
+	try {
+		conn = DriverManager.getConnection(url);
+		String sql = "select * from products where id = ?";
+		PreparedStatement preparedStatement = conn.prepareStatement(sql);
+		preparedStatement.setInt(1, id);
+		ResultSet rs = preparedStatement.executeQuery();
+		
+		while(rs.next()) {
+			Product product = new Product();
+			product.setId(rs.getInt(1));
+			product.setTitle(rs.getString(2));
+			product.setPrice(rs.getFloat(3));
+			return product;
 		}
-		return null;
+		
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
+	
+	return null;
+}
 ```
 
 ## Реалізація add
 
 ```java
-	public Product add(Product product) {
-		Connection connection = null;
-
-		try {
-			connection = DriverManager.getConnection("jdbc:sqlite:db.db");
-			String sql = "INSERT INTO PRODUCTS(title, price) VALUES(?,?);";
-			PreparedStatement preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setString(1, product.getTitle());
-			preparedStatement.setFloat(2, product.getPrice());
-			preparedStatement.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (connection != null)
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-		}
-		return product;
+public Product add(Product entity) {
+		
+	Connection conn = null;
+	
+	try {
+		conn = DriverManager.getConnection(url);
+		String sql = "insert into products(title, price) values(?,?)";
+		PreparedStatement preparedStatement = conn.prepareStatement(sql);
+		preparedStatement.setString(1, entity.getTitle());
+		preparedStatement.setFloat(2, entity.getPrice());
+		preparedStatement.executeUpdate();
+		return entity;
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
+	
+	return null;
+}
 ```
 
 ## Реалізація remove
 
 ```java
-public void remove(Product product) {
-		Connection connection = null;
-
-		try {
-			connection = DriverManager.getConnection("jdbc:sqlite:db.db");
-			String sql = "DELETE FROM PRODUCTS WHERE id = ?;";
-			PreparedStatement preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setInt(1, product.getId());
-			preparedStatement.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (connection != null)
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-		}
+public void remove(Integer id) {
+	Connection conn = null;
+	
+	try {
+		conn = DriverManager.getConnection(url);
+		String sql = "delete from products where id = ?";
+		PreparedStatement preparedStatement = conn.prepareStatement(sql);
+		preparedStatement.setInt(1, id);
+		preparedStatement.executeUpdate();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
+}
 ```
 
 ## Реалізація update
 
 ```java
-public void update(Product product) {
-		Connection connection = null;
-
-		try {
-			connection = DriverManager.getConnection("jdbc:sqlite:db.db");
-			String sql = "UPDATE PRODUCTS SET title = ?, price = ? WHERE id = ?;";
-			PreparedStatement preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setString(1, product.getTitle());
-			preparedStatement.setFloat(2, product.getPrice());
-			preparedStatement.setInt(3, product.getId());
-			preparedStatement.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (connection != null)
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-		}
+public void update(Product entity) {
+		
+	Connection conn = null;
+	
+	try {
+		conn = DriverManager.getConnection(url);
+		String sql = "update products set title = ?, price = ? where id = ?";
+		PreparedStatement preparedStatement = conn.prepareStatement(sql);
+		preparedStatement.setString(1, entity.getTitle());
+		preparedStatement.setFloat(2, entity.getPrice());
+		preparedStatement.setInt(3, entity.getId());
+		preparedStatement.executeUpdate();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
+	
+}
 ```
 
-## Створення конструктора для ініціалізації бази даних sqlite
+## Створення конструктора для ініціалізації бази даних
 
-Ми додамо в клас ProductDAOImpl конструктор, який буде створювати таблицю в базі даних, якщо вона ще не була створена. Код конструктора приведено нижче:
+Ми додамо в клас ProductDao конструктор, який буде створювати таблицю в базі даних, якщо вона ще не була створена. Код конструктора приведено нижче:
 
 ```java
-public ProductDAOImpl() {
-		Connection connection = null;
-
-		try {
-			connection = DriverManager.getConnection("jdbc:sqlite:db.db");
-			String sql = "CREATE TABLE IF NOT EXISTS PRODUCTS(id INTEGER PRIMARY KEY AUTOINCREMENT, title STRING, price FLOAT);";
-			Statement statement = connection.createStatement();
-			statement.executeUpdate(sql);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (connection != null)
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-		}
+public ProductDao() {
+	Connection conn = null;
+	
+	try {
+		conn = DriverManager.getConnection(url);
+		String sql = "create table if not exists products("
+				+ "id integer primary key auto_increment,"
+				+ "title varchar(300),"
+				+ "price float);";
+		Statement statement = conn.createStatement();
+		statement.execute(sql);
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
+	
+}
 ```
 
-## Остаточний код ProductDAOImpl.java
+## Остаточний код ProductDao.java
 
 ```java
 package jdbc.lb.dao;
@@ -529,196 +539,199 @@ import java.util.List;
 
 import jdbc.lb.domain.Product;
 
-public class ProductDAOImpl implements ProductDAO {
+public class ProductDao implements Dao<Product, Integer> {
 
-	public ProductDAOImpl() {
-		Connection connection = null;
-
+	private final static String url = "jdbc:h2:mem:products";
+	
+	public ProductDao() {
+		Connection conn = null;
+		
 		try {
-			connection = DriverManager.getConnection("jdbc:sqlite:db.db");
-			String sql = "CREATE TABLE IF NOT EXISTS PRODUCTS(id INTEGER PRIMARY KEY AUTOINCREMENT, title STRING, price FLOAT);";
-			Statement statement = connection.createStatement();
-			statement.executeUpdate(sql);
+			conn = DriverManager.getConnection(url);
+			String sql = "create table if not exists products("
+					+ "id integer primary key auto_increment,"
+					+ "title varchar(300),"
+					+ "price float);";
+			Statement statement = conn.createStatement();
+			statement.execute(sql);
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-			if (connection != null)
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
 		}
+		
 	}
-
+	
 	public List<Product> getAll() {
-		Connection connection = null;
-		List<Product> products = null;
-
+		Connection conn = null;
+		List<Product> list = null;
+		
 		try {
-			connection = DriverManager.getConnection("jdbc:sqlite:db.db");
-			String sql = "SELECT * FROM PRODUCTS;";
-			Statement statement = connection.createStatement();
-			ResultSet productsResult = statement.executeQuery(sql);
-			products = new ArrayList<Product>();
-			while (productsResult.next()) {
+			conn = DriverManager.getConnection(url);
+			String sql = "select* from products;";
+			Statement statement = conn.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+			
+			list = new ArrayList<Product>();
+			while(rs.next()) {
 				Product product = new Product();
-				product.setId(productsResult.getInt(1));
-				product.setTitle(productsResult.getString(2));
-				product.setPrice(productsResult.getFloat(3));
-				products.add(product);
+				product.setId(rs.getInt(1));
+				product.setTitle(rs.getString(2));
+				product.setPrice(rs.getFloat(3));
+				list.add(product);
 			}
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-			if (connection != null)
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
 		}
-		return products;
+		return list;
 	}
 
-	public Product getById(int id) {
-		Connection connection = null;
-
+	public Product getById(Integer id) {
+		Connection conn = null;
+		
 		try {
-			connection = DriverManager.getConnection("jdbc:sqlite:db.db");
-			String sql = "SELECT * FROM PRODUCTS where id = ?;";
-			PreparedStatement preparedStatement = connection.prepareStatement(sql);
+			conn = DriverManager.getConnection(url);
+			String sql = "select * from products where id = ?";
+			PreparedStatement preparedStatement = conn.prepareStatement(sql);
 			preparedStatement.setInt(1, id);
-			ResultSet productsResult = preparedStatement.executeQuery();
-			while (productsResult.next()) {
+			ResultSet rs = preparedStatement.executeQuery();
+			
+			while(rs.next()) {
 				Product product = new Product();
-				product.setId(productsResult.getInt(1));
-				product.setTitle(productsResult.getString(2));
-				product.setPrice(productsResult.getFloat(3));
+				product.setId(rs.getInt(1));
+				product.setTitle(rs.getString(2));
+				product.setPrice(rs.getFloat(3));
 				return product;
 			}
+			
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-			if (connection != null)
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
 		}
+		
 		return null;
 	}
 
-	public Product add(Product product) {
-		Connection connection = null;
-
+	public Product add(Product entity) {
+		
+		Connection conn = null;
+		
 		try {
-			connection = DriverManager.getConnection("jdbc:sqlite:db.db");
-			String sql = "INSERT INTO PRODUCTS(title, price) VALUES(?,?);";
-			PreparedStatement preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setString(1, product.getTitle());
-			preparedStatement.setFloat(2, product.getPrice());
+			conn = DriverManager.getConnection(url);
+			String sql = "insert into products(title, price) values(?,?)";
+			PreparedStatement preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setString(1, entity.getTitle());
+			preparedStatement.setFloat(2, entity.getPrice());
 			preparedStatement.executeUpdate();
+			return entity;
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-			if (connection != null)
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
 		}
-		return product;
+		
+		return null;
 	}
 
-	public void remove(Product product) {
-		Connection connection = null;
-
+	public void remove(Integer id) {
+		Connection conn = null;
+		
 		try {
-			connection = DriverManager.getConnection("jdbc:sqlite:db.db");
-			String sql = "DELETE FROM PRODUCTS WHERE id = ?;";
-			PreparedStatement preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setInt(1, product.getId());
+			conn = DriverManager.getConnection(url);
+			String sql = "delete from products where id = ?";
+			PreparedStatement preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-			if (connection != null)
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
 		}
 	}
 
-	public void update(Product product) {
-		Connection connection = null;
-
+	public void update(Product entity) {
+		
+		Connection conn = null;
+		
 		try {
-			connection = DriverManager.getConnection("jdbc:sqlite:db.db");
-			String sql = "UPDATE PRODUCTS SET title = ?, price = ? WHERE id = ?;";
-			PreparedStatement preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setString(1, product.getTitle());
-			preparedStatement.setFloat(2, product.getPrice());
-			preparedStatement.setInt(3, product.getId());
+			conn = DriverManager.getConnection(url);
+			String sql = "update products set title = ?, price = ? where id = ?";
+			PreparedStatement preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setString(1, entity.getTitle());
+			preparedStatement.setFloat(2, entity.getPrice());
+			preparedStatement.setInt(3, entity.getId());
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-			if (connection != null)
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
 		}
+		
 	}
 
 }
 ```
 
-## Тестування ProductDAOImpl
+## Тестування ProductDao
 
 Створіть новий клас із методом public static void main:
 
-![](../resources/img/jdbc-img-11.png)
+![](../resources/img/jdbc/jdbc-img-11.png)
 
 Код класа Main:
 
 ```java
 package jdbc.lb;
 
-import jdbc.lb.dao.ProductDAO;
-import jdbc.lb.dao.ProductDAOImpl;
+import java.util.Arrays;
+
+import jdbc.lb.dao.ProductDao;
 import jdbc.lb.domain.Product;
 
 public class Main {
 
 	public static void main(String[] args) {
-		ProductDAO productDAO = new ProductDAOImpl();
-		productDAO.add(new Product("Boots", 20));
-		productDAO.add(new Product("Iphone", 20));
 		
-		productDAO.getAll().stream()
-			.forEach(System.out::println);
+		ProductDao dao = new ProductDao();
 		
-		Product product = productDAO.getById(1);
-		product.setTitle("Modified Title");
-		productDAO.update(product);
+		//add 3 products to database
+		Arrays.asList(
+				new Product("boots", (float)33.3),
+				new Product("phone", (float)100.5),
+				new Product("pc", 22)
+				)
+		.stream()
+		.forEach(p -> dao.add(p));
 		
-		productDAO.getAll().stream()
-		.forEach(System.out::println);
+		//Display all products
+		dao.getAll().stream().forEach(System.out::println);
+		
+		//Update some product
+		dao.getAll().stream().findAny().ifPresent(p -> {
+			p.setTitle("updated");
+			dao.update(p);
+		});
+		
+		//Display all products after update
+		dao.getAll().stream().forEach(System.out::println);
+		
+		//Remove some product
+		dao.getAll().stream().findAny().ifPresent(p -> {
+			dao.remove(p.getId());
+		});
+		
+		//Display all products after remove
+		dao.getAll().stream().forEach(System.out::println);
 	}
 
 }
+
 ```
 
 Результат виконання додатку:
 
-![](../resources/img/jdbc-img-12.png)
+![](../resources/img/jdbc/jdbc-img-12.png)
+
+# Завантажити проект
+
+Проект доступний на репозиторії [java-ee-examples](https://github.com/endlesskwazar/java-ee-examples.git) branch: jdbc-example
 
 # Домашнє завдання
 
@@ -831,4 +844,4 @@ Song{
 1. Що таке JDBC? Назвіть основні компоненти JDBC.
 2. Поясніть концепцію постачальників драйверів.
 3. Яка різниця між Statement і PreparedStatement?
-4. Яка різниця між executeQuery() і executeUpdate()?
+4. Яка різниця між executeQuery() і executeUpdate() і execute()?
