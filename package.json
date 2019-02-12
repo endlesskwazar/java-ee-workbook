@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "gulp-markdown-html-presentation": "0.0.1",
+    "gulp-markdown-html-presentation": "0.0.2",
     "gulp": "^4.0.0",
     "gulp-insert": "^0.5.0",
     "gulp-rename": "^1.4.0",

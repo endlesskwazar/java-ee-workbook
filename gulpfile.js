@@ -26,7 +26,7 @@ gulp.task('additional', () => {
 gulp.task('presentations', () => {
     return gulp.src('md-presentations/*.md')
         .pipe(gulpMdToPresentation({
-            theme: 'monoblock'
+            theme: 'default'
         }))
         .pipe(gulp.dest('dist/presentations'));
 });
