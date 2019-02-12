@@ -17,12 +17,6 @@ gulp.task('workbook', () => {
         .pipe(gulp.dest('dist/workbook'));
 });
 
-gulp.task('additional', () => {
-    return gulp.src('md-additional/*.md')
-    .pipe(gulpMdToHtml())
-    .pipe(gulp.dest('dist/additional'));
-})
-
 gulp.task('presentations', () => {
     return gulp.src('md-presentations/*.md')
         .pipe(gulpMdToPresentation({
@@ -31,4 +25,4 @@ gulp.task('presentations', () => {
         .pipe(gulp.dest('dist/presentations'));
 });
 
-gulp.task('default', gulp.parallel('resources', 'workbook', 'additional', 'presentations'));
+gulp.task('default', gulp.parallel('resources', 'workbook', 'presentations'));
