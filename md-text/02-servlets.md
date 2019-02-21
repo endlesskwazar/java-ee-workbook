@@ -55,7 +55,7 @@ public interface Servlet {
 - Повне знищення сервлету (Garbage Collector).
 
 Схематично, життєвий цикл сервлета можна представити таким чином:
-![](../resources/img/servlet-img-1.jpg)
+![](../resources/img/servlets/servlet-img-1.jpg)
 
 Після отримання запиту, для обробки якого необхідний певний сервлет, відбувається його ініціалізація (метод init ()). Після цього, відбувається обробка даного запиту (service ()). І, в кінці життєвого циклу сервлету відбувається виклик методу destroy ().
 
@@ -126,22 +126,22 @@ void setContentType(String type)| Визначення MIME-типу відпо�
 
 В середовищі Eclipse створіть новий Maven Project. Виберіть archetype - maven-archytype-webapp
 
-![](../resources/img/servlet-img-2.png)
+![](../resources/img/servlets/servlet-img-2.png)
 
 Заповніть необхідну інформацію для створення Maven проекту:
 
-![](../resources/img/servlet-img-3.png)
+![](../resources/img/servlets/servlet-img-3.png)
 
 В результаті ми отримаємо наступну структуру проекту:
 
-![](../resources/img/servlet-img-4.png)
+![](../resources/img/servlets/servlet-img-4.png)
 
 ## Додавання Servlet API
 
 Проект містить помилку, хочу ми не змінили жодного файлу, це зв'язано з тим, що 
 webapp archetype містить шаблон JSP(про JSP, ми поговоримо пізніше), покищо можна сказати що це той же самий сервлет.
 
-![](../resources/img/servlet-img-5.png)
+![](../resources/img/servlets/servlet-img-5.png)
 
 Оскільки сервлет - це API, яке не входить в поставку Java SE, нам потрібно додати залежність за допомогою Maven.
 
@@ -272,35 +272,35 @@ webapp archetype містить шаблон JSP(про JSP, ми поговор
 
 Натисніть правою кнопкою мишки на проектові і виберіть Run As/Run Configurations...
 
-![](../resources/img/servlet-img-6.png)
+![](../resources/img/servlets/servlet-img-6.png)
 
 Потрібно створити нову конфігурацію Maven Build:
 
-![](../resources/img/servlet-img-7.png)
+![](../resources/img/servlets/servlet-img-7.png)
 
 В наступномі вікні потрібно натиснути кнопку Workspace і вибрати проект, а також в полі Goals прописати jetty:run, після чього натиснути кнопку Apply і Run. Наш додаток повинен бути запущений.
 
-![](../resources/img/servlet-img-9.png)
+![](../resources/img/servlets/servlet-img-9.png)
 
 Для перевірки відкрийте браузер і перейдіть по адресі: http://localhost:8080/servletlb
 
-![](../resources/img/servlet-img-8.png)
+![](../resources/img/servlets/servlet-img-8.png)
 
 ## Створення пешого сервлета
 
 Створіть нову директорію java всередині src/main:
 
-![](../resources/img/servlet-img-10.png)
+![](../resources/img/servlets/servlet-img-10.png)
 
 Створіть новий сервлет, в щойно створеній директорії:
 
-![](../resources/img/servlet-img-11.png)
+![](../resources/img/servlets/servlet-img-11.png)
 
-![](../resources/img/servlet-img-12.png)
+![](../resources/img/servlets/servlet-img-12.png)
 
 Для того, щоб перевірити, що наш сервлет працює перейдіть в браузері за адресою http://localhost:8080/servletlb/HelloWorldServlet
 
-![](../resources/img/servlet-img-13.png)
+![](../resources/img/servlets/servlet-img-13.png)
 
 Перепишіть метод doGet класа HelloWorldHttpServlet наступним чином:
 
@@ -329,9 +329,9 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 	}
 ```
 
-![](../resources/img/servlet-img-14.png)
+![](../resources/img/servlets/servlet-img-14.png)
 
-![](../resources/img/servlet-img-15.png)
+![](../resources/img/servlets/servlet-img-15.png)
 # Домашнє завдання
 
 ## Варіанти
