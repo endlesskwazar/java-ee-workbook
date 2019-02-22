@@ -1,16 +1,32 @@
-# javaee-workbook
+# Конспект лекцій Java EE і методичні вказівки до виконання лабораторних робіт.
 
-# Content todos
-- [X] Do jdbc tutorial
-- [X] Do servlet tutorial
-- [ ] Do JSP tutorial
-- [ ] Do JSTL tutorial 
+## Зміст
 
-# Project build todos
-- [ ] Fix potential security vulnerability in one of dependencies
-- [ ] Add syntax highlight for workbook
-- [ ] Add syntax highlight for presentation
-- [ ] Add TOC for workbook
-- [ ] Add index for all tutorials for workbokk
-- [ ] Use remarkjs starter presentation template styles
-- [ ] 
+|Назва|Пояснення|
+|-|-|
+|1. JDBC|В даній лекції ми розглянемо **JDBC API** - прикладний рівень для достопу до бази даних|
+|2. Servlet API|В даній лекції ми розглянемо **Servlets API**, які дозволяють створювати інтернет додатки, без програмування транспортної інфраструктури|
+|3. Java Server Pages(JSP)|В даній лекції ми розглянемо **JSP**, який дозволяє зручно працювати із HTML - сторінками|
+|4. JSP і Java Beans|В даній лекції ми розглянемо інтеграцію **JSP** із **Java Beans**|
+|8. JSTL|В даній лекції ми розглянемо **JSTL** і його інтеграцію із **Java Beans**|
+|9. MVC, використовуючи JDBC, Servlets, JSP|В даній лекції ми поєднаємо такі технології як JDBC, Servlets, JSP для реалізації патерна **MVC**|
+|10. JPA, Hibernate|В даній лекції ми розглянемо **JPA**, і найпопулярнішу його реалізацію **Hibernate**|
+|11. Java Bean Validation API|В даній лекції ми розглянемо як відбувається **валідація Java Beans**|
+|12. CDI|В даній лекції ми розглянемо **CDI**, який дозволить створювати слабко зв'язні, легко замінні компоненти.|
+|13. Hibernate Entity Manager, Relations|В даній лекції ми розглянемо як за допомогою Hibernate можна **працювати із зв'язаними таблицями**|
+|14. JSF|В даній лекції ми розглянемо **JSF**|
+|14. Java EE Security|В даній лекції ми розглянемо реалізацію **захисту інформації** в JavaEE|
+|15. JAX-RS, використовуючи Jersey|В даній лекції ми розглянемо **JAX-RS**, API для створення RESTFull - сервісів|
+|16. JAX-RS JWT Security|В даній лекції ми розглянемо. як відбувається **авторизація** і **аутентифікація** в RESTFull - веб сервісах|
+|17. RESTFull Web Service на Jersey, JWT, Hibernate|В даній лекції ми розлянемо як можна реалізувати веб - сервіс, з використанням технологій **JAX-RS**, **JWT8**, **Hibernate**|
+
+
+# Будування
+
+1. Встановіть [Node.JS](https://nodejs.org/)
+2. Відкрийте термінал в директорії із репозиторієм
+3. Виконайте команду ```npm i```
+4. Виконайте команду ```npx gulp``` або ```npm run build```
+5. Матеріали знаходяться в директорії dist:
+   1. dist/workbook - конспект лекцій і методичні вказівки до виконання лабораторних робіт
+   2. dist/presentations - презентації

@@ -2,20 +2,20 @@
 
 ## Зміст
 
-1. [JDBC](./01-jdbc.html)
-2. [Servlet API](./02-servlets.html)
-3. [Java Server Pages(JSP)](./03-jsp.html)
-4. [JSP і Java Beans](./04-jsp_and_beans.html)
-5. [JSTL](./05-jstl.html)
-6. [Java Bean Validation Api](./06-freemarker.html)
-7. [MVC, використовуючи JDBC, Servler API, JSP, JSTL](./07-)
-8. [JSP, Hibernate](./08-)
-9. [EJB](./09-)
-10. [CDI](./10-)
-11. [EntityManager і Hibernate](./11)
-12. [JSF](./12)
-13. [Java EE Secutity](./13)
-14. [MVC, використовуючи Hibernate, JSF, Java EE Security](./14)
-15. [JAX-RS, використовуючи Jersey](./15)
-16. [JAX-RS JWT Security](./16)
-17. [RESTFull Web Service на Jersey, JWT, Hibernate](./17)
+|Назва|Пояснення|
+|-|-|
+|1. [JDBC](./01-jdbc.html)|В даній лекції ми розглянемо **JDBC API** - прикладний рівень для достопу до бази даних|
+|2. [Servlet API](./02-servlets.html)|В даній лекції ми розглянемо **Servlets API**, які дозволяють створювати інтернет додатки, без програмування транспортної інфраструктури|
+|3. [Java Server Pages(JSP)](./03-jsp.html)|В даній лекції ми розглянемо **JSP**, який дозволяє зручно працювати із HTML - сторінками|
+|4. [JSP і Java Beans](./04-jsp_and_beans.html)](./07-)|В даній лекції ми розглянемо інтеграцію **JSP** із **Java Beans**|
+|8. [JSTL](./08-)|В даній лекції ми розглянемо **JSTL** і його інтеграцію із **Java Beans**|
+|9. [MVC, використовуючи JDBC, Servlets, JSP](./10-)|В даній лекції ми поєднаємо такі технології як JDBC, Servlets, JSP для реалізації патерна **MVC**|
+|10. [JPA, Hibernate](./11)|В даній лекції ми розглянемо **JPA**, і найпопулярнішу його реалізацію **Hibernate**|
+|11. [Java Bean Validation API](./12)|В даній лекції ми розглянемо як відбувається **валідація Java Beans**|
+|12. [CDI](./13)|В даній лекції ми розглянемо **CDI**, який дозволить створювати слабко зв'язні, легко замінні компоненти.|
+|13. [Hibernate Entity Manager, Relations](./14)|В даній лекції ми розглянемо як за допомогою Hibernate можна **працювати із зв'язаними таблицями**|
+|14. [JSF](./14)|В даній лекції ми розглянемо **JSF**|
+|14. [Java EE Security](./14)|В даній лекції ми розглянемо реалізацію **захисту інформації** в JavaEE|
+|15. [JAX-RS, використовуючи Jersey](./15)|В даній лекції ми розглянемо **JAX-RS**, API для створення RESTFull - сервісів|
+|16. [JAX-RS JWT Security](./16)|В даній лекції ми розглянемо. як відбувається **авторизація** і **аутентифікація** в RESTFull - веб сервісах|
+|17. [RESTFull Web Service на Jersey, JWT, Hibernate](./17)|В даній лекції ми розлянемо як можна реалізувати веб - сервіс, з використанням технологій **JAX-RS**, **JWT8**, **Hibernate**|
