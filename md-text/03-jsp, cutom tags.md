@@ -1,3 +1,9 @@
+# JSP
+
+# Зміст
+
+${toc}
+
 # Що таке JSP?
 
 **Java Server Pages** представляє технологію, яка дозволяє створювати динамічні веб-сторінки. Спочатку JSP (разом з Сервлетами) на зорі розвитку Java EE були домінуючим підходом до веб-розробки на мові Java. І хоча в даний час вони поступилося своїм місцем іншій технології - JSF, проте JSP продовжують широко використовуватися.
@@ -92,30 +98,148 @@ JSP транслюється в Java-сервлет і обробляє HTTP-з�
 
 JSP-файл компілюються або при першому зверненні до нього, або при старті сервера. Це залежить від налаштувань сервера. Крім того, скомпільовані class-файли можуть зберігатися не в каталозі проекту, а в кеші сервера, тому ви можете їх не виявити навіть після звернення до jsp-сторінці.
 
-# Створення і виконання JSP в середовищі Eclipse з використанням Maven
+# Приклад використання JSP
 
-В середовищі Eclipse створіть новий Maven Project. Виберіть archetype - maven-archytype-webapp
+Створіть в середовищі Eclipse Maven - проект і виберіть architype - webapp:
 
-![](../resources/img/jsp/01-img.png)
+![](../resources/img/jsp/img-4.png)
 
-Заповніть необхідну інформацію для створення Maven проекту:
+pom.xml буде такий же самий, як ми використовували для сервлетів:
 
-![](../resources/img/jsp/02-img.png)
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>ua.com.endlesskwazar</groupId>
+  <artifactId>jsp.demo</artifactId>
+  <packaging>war</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>jsp.demo Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+  </dependencies>
+  <build>
+    <finalName>jsp.demo</finalName>
+    
+    <plugins>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>9.2.10.v20150310</version>
 
-Відкрийте pom.xml і додайте наступну залежність:
+				<configuration>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<webApp>
+						<contextPath>/jsp.demo</contextPath>
+					</webApp>
+				</configuration>
 
+			</plugin>
+		</plugins>
+  </build>
+</project>
 ```
-<dependency>
-    <groupId>javax.servlet</groupId>
-    <artifactId>javax.servlet-api</artifactId>
-    <version>4.0.1</version>
-    <scope>provided</scope>
-</dependency>
+
+В директорії webapp вже знаходиться один jsp файл - index.js:
+
+![](../resources/img/jsp/img-5.png)
+
+Модифікуємо вміст index.jsp:
+
+```html
+<html>
+<body>
+<h2>Hello World!</h2>
+
+<form action="form-response.jsp">
+	<h2>Enter some name</h2>
+	<input name="name" /><br>
+	<input type="submit">
+</form>
+
+</body>
+</html>
 ```
 
-Додйте конфігурацю Maven Jetty Plugin всередину тега build -> plugins:
+І створимо новий файл form-response.jsp:
 
-<!-- http://mvnrepository.com/artifact/org.eclipse.jetty/jetty-maven-plugin -->
+```html
+<html>
+<body>
+<h2>Hello World!</h2>
+
+<p>
+<%
+String name = request.getParameter("name");
+
+if(name == null)
+	out.print("No name parameter was passed");
+else
+	out.print("Passed name from form is " + name);
+%>
+</p>
+
+</body>
+</html>
+```
+
+![](../resources/img/jsp/img-6.png)
+
+![](../resources/img/jsp/img-7.png)
+
+# Створенна власного тега JSP
+
+Для того, щоб мати можливість розробляти власні теги, крім servlet-api, нам знадобиться servlet.jsp-api:
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ua.com.endlesskwazar</groupId>
+	<artifactId>custom.jsp.tag</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>custom.jsp.tag Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>javax.servlet.jsp-api</artifactId>
+			<version>2.3.3</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>custom.jsp.tag</finalName>
+
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
@@ -125,16 +249,154 @@ JSP-файл компілюються або при першому зверне�
 				<configuration>
 					<scanIntervalSeconds>10</scanIntervalSeconds>
 					<webApp>
-						<contextPath>/servletlb</contextPath>
+						<contextPath>/custom.jsp.tag</contextPath>
 					</webApp>
 				</configuration>
 
 			</plugin>
 		</plugins>
+	</build>
+</project>
+```
 
+Припустимо, ми хочемо показати номер із форматуванням комами та пробілами. Це може бути дуже корисно для користувача, коли номер дійсно довгий. Отже, ми хочемо, щоб були деякі спеціальні теги:
+
+```html
+<mytags:formatNumber number="100050.574" format="#,###.00"/>
+```
+
+## Custom Tag Handler
+
+Це перший крок у створенні власних тегів у JSP. Все, що нам потрібно зробити - це розширити клас javax.servlet.jsp.tagext.SimpleTagSupport і перевизначити метод doTag().
+
+Важливо відзначити, що для атрибутів, які потрібні для тегу, ми повинні мати методи сеттера. Отже, ми визначимо два методи встановлення - setFormat (формат String) і setNumber (номер рядка).
+
+SimpleTagSupport надає методи, за допомогою яких ми можемо отримати об'єкт JspWriter і записати дані у відповідь. Ми будемо використовувати клас DecimalFormat для створення форматованого рядка, а потім записати його у відповідь. Остаточна реалізація наведена нижче.
+
+```java
+package custom.jsp.tag;
+
+import java.io.IOException;
+import java.text.DecimalFormat;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.SkipPageException;
+import javax.servlet.jsp.tagext.SimpleTagSupport;
+
+public class NumberFormatterTag extends SimpleTagSupport {
+	
+	private String format;
+	
+	private String number;
+	
+	public NumberFormatterTag() {
+		
+	}
+	
+	public void setFormat(String format) {
+		this.format = format;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
+	
+	@Override
+	public void doTag() throws JspException, IOException {
+		System.out.println("Number is:" + number);
+		System.out.println("Format is:" + format);
+		try {
+			double amount = Double.parseDouble(number);
+			DecimalFormat formatter = new DecimalFormat(format);
+			String formattedNumber = formatter.format(amount);
+			getJspContext().getOut().write(formattedNumber);
+		} catch (Exception e) {
+			e.printStackTrace();
+			// зупини завантаження сторінки і кинути SkipPageException
+			throw new SkipPageException("Exception in formatting " + number
+					+ " with format " + format);
+		}
+	}
+
+}
+```
+
+## JSP Custom Tag Library Descriptor (TLD)
+
+Після того, як клас обробника тегів буде готовий, нам потрібно визначити файл TLD у каталозі WEB-INF, щоб контейнер завантажив його після розгортання програми.
+
+**numberformatter.tld**:
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+    version="2.0">
+<description>Number Formatter Custom Tag</description>
+<tlib-version>2.1</tlib-version>
+<short-name>mytags</short-name>
+<uri>https://endlesskwazar.com.ua/tlds/my-tags</uri>
+<tag>
+	<name>formatNumber</name>
+	<tag-class>custom.jsp.tag.NumberFormatterTag</tag-class>
+	<body-content>empty</body-content>
+	<attribute>
+	<name>format</name>
+	<required>true</required>
+	</attribute>
+	<attribute>
+	<name>number</name>
+	<required>true</required>
+	</attribute>
+</tag>
+</taglib>
+```
+
+## Custom Tag Deployment Descriptor Configuration
+
+**web.xml**:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns="http://java.sun.com/xml/ns/javaee"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+   version="3.0">
+  <display-name>Archetype Created Web Application</display-name>
+  
+  <jsp-config>
+  <taglib>
+  	<taglib-uri>https://endlesskwazar.com.ua/tlds/my-tags</taglib-uri>
+  	<taglib-location>/WEB-INF/numberformatter.tld</taglib-location>
+  </taglib>
+  </jsp-config>
+</web-app>
+
+```
+
+
+![](../resources/img/jsp/img-3.png)
 
 # Домашнє завдання
 
+Створіть власний JSP - тег, який винконує завдання згідно із варіантом.
+
 ## Варіанти
 
+1. іва
+2. іва
+3. віаві
+4. іаві
+5. вапрва
+6. впва
+7. вапва
+8. вап 
+9. апва
+
 # Контрольні питання
+
+1. Що таке JSP?
+2. Як можна вставити код в JSP сторінку?
+3. Опишіть процес створення влосного JSP - тега.
