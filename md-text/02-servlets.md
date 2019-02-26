@@ -334,6 +334,8 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 ![](../resources/img/servlets/servlet-img-15.png)
 # Домашнє завдання
 
+Завдання згідно із варіантом. Проект залийте на гілку **lb2**.
+
 ## Варіанти
 
 1. Розробіть сервлет, який реалізує пошук по двовимірному масиву даних.
