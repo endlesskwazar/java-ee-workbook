@@ -376,6 +376,9 @@ else
 
 ![](../resources/img/jsp/img-7.png)
 
+- Проект доступний за адресою [java-ee-examples](https://github.com/endlesskwazar/java-ee-examples)
+- Гілка jsp-example
+
 # Створенна власного тега JSP
 
 Для того, щоб мати можливість розробляти власні теги, крім servlet-api, нам знадобиться servlet.jsp-api:
@@ -549,11 +552,12 @@ public class NumberFormatterTag extends SimpleTagSupport {
   </taglib>
   </jsp-config>
 </web-app>
-
 ```
 
-
 ![](../resources/img/jsp/img-3.png)
+
+- Проект доступний за адресою [java-ee-examples](https://github.com/endlesskwazar/java-ee-examples)
+- Гілка jsp-custom-tag-example
 
 # Домашнє завдання
 
