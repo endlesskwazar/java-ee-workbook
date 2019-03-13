@@ -312,7 +312,7 @@ public class Person {
  <c:redirect url = "http://www.photofuntoos.com"/>
 ```
 
-# Реалізаця патерна MVC, використовуючи Servlets, JSP, JSTL, Java Beans
+# Реалізаця патерна MVC, використовуючи Servlets, JSP, JSTL, Java Beans, JDBC
 
 ![](../resources/img/beans/img-10.png)
 
