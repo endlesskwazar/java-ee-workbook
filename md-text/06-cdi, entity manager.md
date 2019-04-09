@@ -366,17 +366,147 @@ public class SampleServlet extends HttpServlet {
 - Репозиторій [java-ee-example](https://github.com/endlesskwazar/java-ee-examples)
 - Гілка cdi-ex1
 
-# Entity Manager
-
-**EntityManager** є частиною Java Persistence API. В основному, він реалізує інтерфейси програмування та правила життєвого циклу, визначені специфікацією JPA 2.0.
-
-Більш того, ми можемо отримати доступ до Persistance Context, використовуючи API в EntityManager.
-
-
-
 # Bean validation API
 
+JSR 380 - це специфікація Java API для перевірки компонентів, що є частиною JavaEE і JavaSE, що гарантує, що властивості компонента відповідають конкретним критеріям, використовуючи анотації.
 
+Відповідно до специфікації JSR 380, залежність валідації-api містить стандартні API для перевірки:
+
+```xml
+<dependency>
+    <groupId>javax.validation</groupId>
+    <artifactId>validation-api</artifactId>
+    <version>2.0.0.Final</version>
+</dependency>
+```
+
+Hibernate Validator є еталонною реалізацією API.
+
+```xml
+<dependency>
+    <groupId>org.hibernate.validator</groupId>
+    <artifactId>hibernate-validator</artifactId>
+    <version>6.0.2.Final</version>
+</dependency>
+<dependency>
+    <groupId>org.hibernate.validator</groupId>
+    <artifactId>hibernate-validator-annotation-processor</artifactId>
+    <version>6.0.2.Final</version>
+</dependency>
+```
+
+Для "variable interpolation" потрібно мати залежність на el API і реалізацію:
+
+```xml
+<dependency>
+  <groupId>javax.el</groupId>
+  <artifactId>javax.el-api</artifactId>
+  <version>3.0.0</version>
+</dependency>
+
+<dependency>
+  <groupId>org.glassfish.web</groupId>
+  <artifactId>javax.el</artifactId>
+  <version>2.2.6</version>
+</dependency>
+```
+
+Тут слід зауважити, що прилад hibernate-validator повністю відокремлений від аспектів збереження Hibernate.
+
+Створимо наступно модель:
+
+User.java:
+```java
+package validation;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
+public class User {
+	@NotNull(message = "Поле ім'я обов'язкове.")
+	@NotBlank(message = "Поле ім'я обов'язкове.")
+	private String name;
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public Integer getAge() {
+		return age;
+	}
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+	
+	@Email(message = "Невалідний Email")
+	private String email;
+	
+	@Positive(message = "Вік повинен бути позитивним")
+	private Integer age;
+}
+```
+
+Клас Main.java:
+```java
+package validation;
+
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
+public class Main {
+
+	public static void main(String[] args) {
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
+		User user = new User();
+		user.setName("");
+		user.setAge(-12);
+		user.setEmail("qwe");
+		
+		Set<ConstraintViolation<User>> violations = validator.validate(user);
+		
+		if(violations.isEmpty()) {
+			//valid, can save
+		}
+		else {
+			for (ConstraintViolation<User> violation : violations) {
+				System.out.println(violation.getMessage());
+			}
+		}
+	}
+
+}
+```
+
+Анотації, які можна використовувати:
+
+|Анотація|Пояснення|
+|-|-|
+|@NotNull|перевіряє, що значення анотації властивості не є null|
+|@AssertTrue|підтверджує, що значення властивості анотації є істинним|
+|@Size|перевіряє, що значення анотації властивості має розмір між атрибутами min і max; @Size(min = 10, max = 200)|
+|@Min|Підтверджує, що анотаційне властивість має значення не менше, ніж атрибут value|
+|@Max|перевіряє, що властивість анотації має значення не більше, ніж атрибут value|
+|@Email|підтверджує, що анотаційне властивість є дійсною адресою електронної пошти|
+|@NotEmpty|перевіряє, що властивість не є нульовою або порожньою|
+|@NotBlank|може застосовуватися тільки до текстових значень і перевіряється, що властивість не є нульовим або пробілом|
+|@Positive @PositiveOrZero|застосовуються до числових значень і підтверджують, що вони є строго позитивними або позитивними, включаючи 0|
+|@Negative @NegativeOrZero|застосовуються до числових значень і перевіряють, що вони є строго негативними або негативними, включаючи 0|
 
 # Домашня робота
 
