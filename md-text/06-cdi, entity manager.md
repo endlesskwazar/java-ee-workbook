@@ -508,6 +508,10 @@ public class Main {
 |@Positive @PositiveOrZero|застосовуються до числових значень і підтверджують, що вони є строго позитивними або позитивними, включаючи 0|
 |@Negative @NegativeOrZero|застосовуються до числових значень і перевіряють, що вони є строго негативними або негативними, включаючи 0|
 
+Завантажити приклад:
+- Репозиторій [java-ee-example](https://github.com/endlesskwazar/java-ee-examples)
+- Гілка validation
+
 # Домашня робота
 
 Розробіть MVC додаток, використовуючи Servlets, JSP, JPA, Bean vaidation, CDI.
